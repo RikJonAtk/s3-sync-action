@@ -1,4 +1,40 @@
-# GitHub Action to Sync S3 Bucket 🔄
+# GitHub Action to Sync S3 Bucket & Invalidate Cloudfront CDN 🔄
+
+This fork is customised to better suit scenarios where resources hosted in S3 are fronted by a Cloudfront CDN.
+
+This fork;
+ - Changes the default AWS location to a static value of EU-WEST-2 (London)
+ - Invalidates everything included in the distribution id provided via a new Secret / new Environmental Vairable, AWS_CLOUDFRONT_DISTRIBUTION
+ - Removes the recommendation for including '--acl public-read' from the GitHub Action YAML because this is not compatible with S3 sites fronted by a CloudFront CDN.
+ - Changes the default 'on:' behaviour so actions only trigger manually.  Change "workflow_dispatch" to "push" for automated actions every time a commit is made.
+
+
+```yaml
+name: Upload Website
+
+on: workflow_dispatch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - uses: RikJonAtk/s3-sync-action@master
+
+      with:
+        args: --follow-symlinks --delete --exclude '.git/*'
+      env:
+        AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: 'eu-west-2'
+        AWS_CLOUDFRONT_DISTRIBUTION: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION }}
+
+```
+
+---
+
+Original fork from https://github.com/jakejarvis/s3-sync-action
 
 This simple action uses the [vanilla AWS CLI](https://docs.aws.amazon.com/cli/index.html) to sync a directory (either from your repository or generated during your workflow) with a remote S3 bucket.
 

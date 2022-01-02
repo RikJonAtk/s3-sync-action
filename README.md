@@ -3,9 +3,10 @@
 This fork is customised to better suit scenarios where resources hosted in S3 are fronted by a Cloudfront CDN.
 
 This fork;
- - Changes the default AWS location to a static value of EU-WEST-2 (London)
- - Invalidates everything included in the distribution id provided via a new Secret / new Environmental Vairable, AWS_CLOUDFRONT_DISTRIBUTION
- - Removes the recommendation for including '--acl public-read' from the GitHub Action YAML because this is not compatible with S3 sites fronted by a CloudFront CDN.
+ - AWSCLI version specified for pip install updated to 1.22.26
+ - Default AWS location statically set to EU-WEST-2 (London)
+ - Invalidates everything included in the distribution id provided via a new GitHub Secret / new Environmental Vairable, AWS_CLOUDFRONT_DISTRIBUTION
+ - Removes the suggested '--acl public-read' from the GitHub Action YAML because this is not compatible with S3 sites fronted by a CloudFront CDN.
  - Changes the default 'on:' behaviour so actions only trigger manually.  Change "workflow_dispatch" to "push" for automated actions every time a commit is made.
 
 

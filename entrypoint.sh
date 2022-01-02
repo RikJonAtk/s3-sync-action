@@ -17,9 +17,14 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
   exit 1
 fi
 
+if [ -z "AWS_CLOUDFRONT_DISTRIBUTION" ]; then
+  echo "AWS_CLOUDFRONT_DISTRIBUTION is not set. Quitting."
+  exit 1
+fi
+
 # Default to us-east-1 if AWS_REGION not set.
 if [ -z "$AWS_REGION" ]; then
-  AWS_REGION="us-east-1"
+  AWS_REGION="eu-west-2"
 fi
 
 # Override default AWS endpoint if user sets AWS_S3_ENDPOINT.
@@ -43,6 +48,9 @@ sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               --profile s3-sync-action \
               --no-progress \
               ${ENDPOINT_APPEND} $*"
+
+# Invalidate CDN
+aws cloudfront create-invalidation --distriubtion-id ${AWS_CLOUDFRONT_DISTRIBUTION} --invalidation-batch file://*.*
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of

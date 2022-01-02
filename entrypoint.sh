@@ -50,7 +50,7 @@ sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               ${ENDPOINT_APPEND} $*"
 
 # Invalidate CDN
-aws cloudfront create-invalidation --distriubtion-id ${AWS_CLOUDFRONT_DISTRIBUTION} --invalidation-batch file://*.*
+aws cloudfront create-invalidation --distriubtion-id ${AWS_CLOUDFRONT_DISTRIBUTION} --paths "*.*"
 
 # Clear out credentials after we're done.
 # We need to re-run `aws configure` with bogus input instead of
